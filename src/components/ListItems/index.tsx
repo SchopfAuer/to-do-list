@@ -9,11 +9,11 @@ import {
 import { styles } from './styles';
 import { Background } from '../Background';
 
-type listProps = {
+export type ListProps = {
   task: string;
 }
 
-export function ListItems({ task }: listProps) {
+export function ListItems({ task }: ListProps) {
   const [isChecked, setIsChecked] = useState(false)
 
   return (
@@ -30,7 +30,10 @@ export function ListItems({ task }: listProps) {
           style={styles.content}
         >
           <Text
-            style={styles.task}
+            style={
+              isChecked ? styles.checkedTask :
+              styles.task
+            }
             adjustsFontSizeToFit
             numberOfLines={1}
           >

@@ -4,7 +4,6 @@ import React, { ReactNode } from 'react';
 import {
   View
 } from 'react-native';
-import { theme } from '../../global/styles/theme';
 
 import { styles } from './styles';
 
@@ -13,12 +12,11 @@ type Props = {
 }
 
 export function Background({children}:Props){
-  const {backgroundDown, backgroundUp} = theme.colors
   return (
-    <LinearGradient
-      colors={[backgroundUp, backgroundDown]}
+    <View
+      style={styles.container}
     >
       {children}
-    </LinearGradient>
+    </View>
   );
 }
