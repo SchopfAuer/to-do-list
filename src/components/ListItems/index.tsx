@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import CheckBox from '@react-native-community/checkbox';
+import CheckBox, { CheckBoxComponent, CheckBoxProps } from '@react-native-community/checkbox';
 
 import {
   View,
@@ -10,20 +10,26 @@ import { styles } from './styles';
 import { Background } from '../Background';
 
 export type ListProps = {
+  id: string
   task: string;
+  isChecked: boolean;
+  checkSorter: number;
 }
 
-export function ListItems({ task }: ListProps) {
-  const [isChecked, setIsChecked] = useState(false)
+type Props = CheckBoxProps & {
+  data: ListProps
+}
+
+export function ListItems({ data, ...rest }: Props) {
 
   return (
     <Background>
       <View style={styles.container} >
         <View>
           <CheckBox
-            style={{ width: 20, height: 20 }}
-            value={isChecked}
-            onValueChange={setIsChecked}
+            style={styles.checkbox}
+            value={data.isChecked}
+            {...rest}
           />
         </View>
         <View
@@ -31,13 +37,13 @@ export function ListItems({ task }: ListProps) {
         >
           <Text
             style={
-              isChecked ? styles.checkedTask :
+              data.isChecked ? styles.checkedTask :
               styles.task
             }
             adjustsFontSizeToFit
             numberOfLines={1}
           >
-            {task}
+            {data.task}
           </Text>
         </View>
       </View>

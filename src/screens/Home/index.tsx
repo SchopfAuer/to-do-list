@@ -31,7 +31,16 @@ export function Home() {
   async function loadTasks() {
     const response = await AsyncStorage.getItem(COLLECTION_TASKS)
     const storage: ListProps[] = response ? JSON.parse(response) : [];
-    setCurrentTasks(storage)
+    const tasks = storage.sort(function (item1, item2) {
+      if (item1.checkSorter > item2.checkSorter) {
+        return 1;
+      }
+      if (item1.checkSorter < item2.checkSorter) {
+        return -1;
+      }
+      return 0;
+    });
+    setCurrentTasks(tasks)
     setLoading(false)
   }
 
@@ -45,6 +54,8 @@ export function Home() {
       const newTask = {
         id: uuid.v4(),
         task: task,
+        isChecked: false,
+        checkSorter: 0
       };
 
       const storage = await AsyncStorage.getItem(COLLECTION_TASKS)
@@ -56,7 +67,6 @@ export function Home() {
       );
       setTask('')
     }
-    setLoading(true)
     loadTasks()
   }
 
@@ -77,12 +87,29 @@ export function Home() {
         {
           text: "Confirmar",
           onPress: () => {
-            handleClearTasks(),
-            setLoading(true)
+            handleClearTasks()
           }
         }
       ]
     )
+  }
+
+  async function handleToggleIsChecked(key: ListProps) {
+    const response = await AsyncStorage.getItem(COLLECTION_TASKS)
+    const storage: ListProps[] = response ? JSON.parse(response) : []
+    const tasks = storage.filter(item => item.id != key.id)
+
+    const refactoredTask = {
+      id: key.id,
+      task: key.task,
+      isChecked: key.isChecked ? false : true,
+      checkSorter: !key.isChecked ? 1 : 0
+    };
+    await AsyncStorage.setItem(
+      COLLECTION_TASKS,
+      JSON.stringify([refactoredTask, ...tasks])
+    )
+    loadTasks()
   }
 
   useEffect(() => {
@@ -152,7 +179,8 @@ export function Home() {
                 keyExtractor={item => item.id}
                 renderItem={({ item }) => (
                   <ListItems
-                    task={item.task}
+                    data={item}
+                    onValueChange={() => handleToggleIsChecked(item)}
                   />
                 )}
                 ItemSeparatorComponent={() => <ListDivider isCentered />}

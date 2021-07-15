@@ -30,4 +30,8 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-start'
   },
+  checkbox: {
+    width: 20,
+    height: 20,
+  },
 });
